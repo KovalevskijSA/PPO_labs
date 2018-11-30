@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PPO</string>
+    <string name="version">Version</string>
+    <string name="imei">IMEI</string>
+    <string name="close">Close</string>
+    <string name="explanation">The application requests permission to access your functions to show your IMEI</string>
+</resources>
