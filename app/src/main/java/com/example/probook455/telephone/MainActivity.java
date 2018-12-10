@@ -16,7 +16,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     static final int PERMISSIONS_REQUEST_READ_PHONE_STATE = 345;
-    private Boolean shouldShowPermissionExplanation = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_PHONE_STATE},
                         PERMISSIONS_REQUEST_READ_PHONE_STATE);
-                shouldShowPermissionExplanation = true;
             }
         }
         else {
@@ -77,10 +76,7 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     showImei();
                 }
-                else if (shouldShowPermissionExplanation) {
-                    showPermissionExplanation();
-                    shouldShowPermissionExplanation = false;
-                }
+                else getImei();
             }
         }
     }
