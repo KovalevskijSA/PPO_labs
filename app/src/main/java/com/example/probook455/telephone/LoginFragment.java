@@ -1,7 +1,5 @@
 package com.example.probook455.telephone;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -50,22 +48,30 @@ public class LoginFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
         goToRegistrationButton = view.findViewById(R.id.l_register);
-        goToRegistrationButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_registrationFragment));
-
+        goToRegistrationButton.setOnClickListener(
+                Navigation.createNavigateOnClickListener(
+                        R.id.action_loginFragment_to_registrationFragment
+                )
+        );
         loginButton = view.findViewById(R.id.l_login);
         loginButton.setOnClickListener(login);
 
         emailEditText = view.findViewById(R.id.l_email);
+        emailEditText.addTextChangedListener(new EmailValidator(emailEditText, getContext()));
+
         passwordEditText = view.findViewById(R.id.l_password);
     }
+
 
     private View.OnClickListener login = new View.OnClickListener() {
         @Override
         public void onClick(final View view) {
             final String email = emailEditText.getText().toString().trim();
             final String password = passwordEditText.getText().toString().trim();
-
+            if (emailEditText.getError() != null) return;
+            if (!email.isEmpty() && !password.isEmpty()){
             FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -80,7 +86,11 @@ public class LoginFragment extends Fragment {
                             }
                         }
                     });
+            } else {
+                Toast.makeText(getContext(), "Some error occurred", Toast.LENGTH_SHORT).show();
+            }
         }
     };
+
 }
 

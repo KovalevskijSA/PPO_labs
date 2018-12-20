@@ -3,6 +3,11 @@
     package="com.example.probook455.telephone">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -11,21 +16,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
-            android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="${screenOrientation}">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="sdapp"
-                    android:host="com.example.probook455.telephone"/>
-            </intent-filter>
-        </activity>
         <activity
             android:name=".AboutActivity"
             android:configChanges="orientation|screenSize"
@@ -36,6 +26,25 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+
+                <!--<data-->
+                    <!--android:host="com.example.probook455.telephone"-->
+                    <!--android:scheme="sdapp" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity
+            android:name=".RssWebView"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_rss_web_view">
         </activity>
     </application>
 

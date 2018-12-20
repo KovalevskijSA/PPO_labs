@@ -13,15 +13,21 @@
         <action
             android:id="@+id/action_profileFragment_to_profileEditFragment"
             app:destination="@id/profileEditFragment" />
+        <deepLink app:uri="sdapp://com.example.probook455.telephone/profile" />
     </fragment>
     <fragment
         android:id="@+id/profileEditFragment"
         android:name="com.example.probook455.telephone.ProfileEditFragment"
         android:label="fragment_profile_edit"
-        tools:layout="@layout/fragment_profile_edit" />
+        tools:layout="@layout/fragment_profile_edit" ><deepLink app:uri="sdapp://com.example.probook455.telephone/profile/edit"/></fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.probook455.telephone.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" ><deepLink app:uri="sdapp://com.example.probook455.telephone/home"/></fragment>
+    <fragment
+        android:id="@+id/newsFragment"
+        android:name="com.example.probook455.telephone.NewsFragment"
+        android:label="fragment_news"
+        tools:layout="@layout/fragment_news" />
 </navigation>

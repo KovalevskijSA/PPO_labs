@@ -7,6 +7,23 @@
 
     <string name="home_fragment">Home</string>
     <string name="profile_fragment">Profile</string>
+    <string name="profile_image">Profile image</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="logout">Logout</string>
+    <string name="email">Email</string>
+    <string name="change_photo">Change photo</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="phone">Phone</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="password_confirmation">Password confirmation</string>
+    <string name="register">Register</string>
+    <string name="sign_in_to_your_account">Sign in to your account</string>
+    <string name="home">Home</string>
+    <string name="email_password_blank">Email and password should not be blank</string>
+    <string name="select_photo_from_gallery">Select photo from gallery</string>
+    <string name="capture_photo">Capture photo from camera</string>
     <string name="title_activity_main">Android</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -18,4 +35,42 @@
     <string name="auth_error_message">Error</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="what_you_wanna_do">What do you want to do?</string>
+    <string name="make_photo">Take photo</string>
+    <string name="choose_existing">Choose existing</string>
+
+
+    <string name="title_activity_rss_web_view">RssWebView</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="rss_correct_url_request">You need to specify CORRECT link to rss feed</string>
+
+    <string name="preference_last_userId">last_userId</string>
+    <string name="preference_rssUrl">rssUrl</string>
+    <string name="loading">Loading...</string>
+    <string name="no_internet">No Internet connection</string>
+    <string name="set_avatar_photo">Set avatar photo</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="why_did_you_pressed_back">Shit, why did you pressed back?</string>
+    <string name="unknown_error">unknown error</string>
+    <string name="youre_about_to_loose_changes">You\'re about to loose unsaved changes!</string>
+    <string name="leave">Leave</string>
+    <string name="stay">Stay</string>
+    <string name="incorrect_rss_url">Incorrect RssFeed link</string>
+    <string name="loading_failed">Loading failed</string>
+    <string name="ok">OK</string>
+    <string name="feed_loaded">Feed loaded</string>
+    <string name="feed_loading_failed">Feed loading failed</string>
+    <string name="feed_item_loading_failed">Feed item loading failed</string>
+    <string name="feed_loaded_from_cache">Feed loaded from cache</string>
+    <string name="welcome_to_rss">Welcome to RSS World!</string>
+    <string name="pphone">Phone</string>
+
+    <string name="profile_name">Profile</string>
+    <string name="news_name">News</string>
+    <string name="favorites_name">Favorites</string>
+    <string name="about_name">Info</string>
+
+
 </resources>
