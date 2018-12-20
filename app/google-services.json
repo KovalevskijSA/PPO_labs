@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "135749367963",
+    "firebase_url": "https://ppofirebaseproject-eb015.firebaseio.com",
+    "project_id": "ppofirebaseproject-eb015",
+    "storage_bucket": "ppofirebaseproject-eb015.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135749367963:android:28f6722712b60adb",
+        "android_client_info": {
+          "package_name": "com.example.probook455.telephone.dev.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135749367963-c2vg9pgkgt38oq3plh8qnmkde8m975b4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.probook455.telephone.dev.debug",
+            "certificate_hash": "ee0d51d3f6badbd4df00afa58e0d461356ff2e29"
+          }
+        },
+        {
+          "client_id": "135749367963-b8anldgc33evgvnisb32a7f48ad630e1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnRNw2xdcSnluSCmtTtSc2XGglUiyziJo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "135749367963-b8anldgc33evgvnisb32a7f48ad630e1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135749367963:android:1ebfc958667fad7d",
+        "android_client_info": {
+          "package_name": "com.example.probook455.telephone.full.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135749367963-974a5hb0jvepk4c9odhpd66pt8u1mmdj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.probook455.telephone.full.debug",
+            "certificate_hash": "ee0d51d3f6badbd4df00afa58e0d461356ff2e29"
+          }
+        },
+        {
+          "client_id": "135749367963-b8anldgc33evgvnisb32a7f48ad630e1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnRNw2xdcSnluSCmtTtSc2XGglUiyziJo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "135749367963-b8anldgc33evgvnisb32a7f48ad630e1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
