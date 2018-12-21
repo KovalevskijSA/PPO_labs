@@ -19,12 +19,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import static android.app.Activity.RESULT_OK;
@@ -42,12 +47,12 @@ public class ProfileEditFragment extends Fragment {
     private EditText firstNameEditText;
     private EditText lastNameEditText;
     private ImageView imageView;
-
+    private ProgressBar progressBar;
     private Button saveButton;
     private UserProfile user;
 
     private Boolean isPhotoChanged = false;
-
+    private UserRepository rep = new UserRepository();;
     private ImageRepository.OnImageDownloadedListener onImageDownloadedListener;
 
     public ProfileEditFragment() {
@@ -62,34 +67,20 @@ public class ProfileEditFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         firstNameEditText = view.findViewById(R.id.profileFirstName);
         lastNameEditText = view.findViewById(R.id.profileLastName);
-        emailEditText = view.findViewById(R.id.profileEmail);
         phoneEditText = view.findViewById(R.id.profilePhone);
         imageView = view.findViewById(R.id.profileImage);
         saveButton = view.findViewById(R.id.saveButton);
-
-        UserRepository rep = UserRepository.getInstance();
-        user = rep.getUser();
-        if (user == null){
-            user = new UserProfile();
-        }
+        progressBar = view.findViewById(R.id.progressBar);
         selectedImageUri = null;
 
-        if (savedInstanceState == null) {
-            firstNameEditText.setText(user.firstName);
-            lastNameEditText.setText(user.lastName);
-            emailEditText.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-            phoneEditText.setText(user.phone);
-
-            setFileAsImage(ImageRepository.getInstance().getImageFile());
-        } else {
+        if (savedInstanceState != null) {
             firstNameEditText.setText(savedInstanceState.getString("name"));
             lastNameEditText.setText(savedInstanceState.getString("surname"));
-            emailEditText.setText(savedInstanceState.getString("email"));
+
             phoneEditText.setText(savedInstanceState.getString("phone"));
             String imageUri = savedInstanceState.getString("selectedImageUri");
             takenImageBitmap = savedInstanceState.getParcelable("takenImageBitmap");
@@ -108,13 +99,32 @@ public class ProfileEditFragment extends Fragment {
             @Override
             public void onImageDownloaded(File image) {
                 setFileAsImage(image);
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
             }
 
             @Override
             public void onImageDownloadFailure(Exception e) {
                 e = e;
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
             }
         };
+
+        ValueEventListener profileEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+                if (userProfile!= null && savedInstanceState == null){
+                    setUI(userProfile);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        rep.addProfileEventListener(profileEventListener);
+
         ImageRepository.getInstance().addOnImageDownloadedListener(onImageDownloadedListener);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -123,22 +133,8 @@ public class ProfileEditFragment extends Fragment {
                 UserProfile user = new UserProfile();
                 user.firstName = firstNameEditText.getText().toString();
                 user.lastName = lastNameEditText.getText().toString();
-                String email = emailEditText.getText().toString();
                 user.phone = phoneEditText.getText().toString();
-                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (!firebaseUser.getEmail().equals(email))
-                    firebaseUser.updateEmail(email)
-                            .addOnCompleteListener(new OnCompleteListener() {
-                                @Override
-                                public void onComplete(@NonNull Task task) {
-                                    if (task.isSuccessful()) {
-                                        UserRepository.getInstance().notifyFirebaseUser();
-                                    } else {
-                                        Toast.makeText(getContext(), "Failed to update email!", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-                UserRepository.getInstance().setUser(user);
+                rep.setUserProfile(user);
                 if (isPhotoChanged){
                     if (selectedImageUri != null) {
                         ImageRepository.getInstance().setImage(selectedImageUri);
@@ -164,7 +160,6 @@ public class ProfileEditFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putString("name", firstNameEditText.getText().toString());
         outState.putString("surname", lastNameEditText.getText().toString());
-        outState.putString("email", emailEditText.getText().toString());
         outState.putString("phone", phoneEditText.getText().toString());
         outState.putString("selectedImageUri", selectedImageUri == null? null : selectedImageUri.toString());
         outState.putParcelable("takenImageBitmap", takenImageBitmap);
@@ -176,7 +171,6 @@ public class ProfileEditFragment extends Fragment {
         }
         firstNameEditText.setText(user.firstName);
         lastNameEditText.setText(user.lastName);
-        emailEditText.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         phoneEditText.setText(user.phone);
     }
 
@@ -185,6 +179,9 @@ public class ProfileEditFragment extends Fragment {
             return;
         Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
         imageView.setImageBitmap(myBitmap);
+        if (!ImageRepository.isChange){
+            progressBar.setVisibility(ProgressBar.INVISIBLE);
+        }
     }
 
     private void showImagePhotoSourceSelectionDialog() {

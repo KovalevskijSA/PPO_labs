@@ -29,7 +29,7 @@ public class ImageRepository {
     private static final String TAG = "ImageRepository";
     private final String imageFilename = "image";
     private final String imageFileExtention = ".jpg";
-
+    public static boolean isChange = false;
     private static ImageRepository instance;
 
     private StorageReference storageRef;
@@ -67,6 +67,7 @@ public class ImageRepository {
             notifyOnImageDownloadedListenersAboutFailure(new FirebaseAuthException("not authorized", "user is not authorized"));
             return;
         }
+        isChange = true;
         String uid = user.getUid();
         final StorageReference fileRef = storageRef.child(uid+"/"+imageFilename+imageFileExtention);
         fileRef.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -98,8 +99,9 @@ public class ImageRepository {
             notifyOnImageDownloadedListenersAboutFailure(new FirebaseAuthException("not authorized", "user is not authorized"));
             return;
         }
+        isChange = true;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
         byte[] data = baos.toByteArray();
 
         String uid = user.getUid();
@@ -133,7 +135,6 @@ public class ImageRepository {
     }
 
     public void downloadImage() {
-//        notifyOnProgressStarted();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user == null) {
             notifyOnImageDownloadedListenersAboutFailure(new FirebaseAuthException("not authorized", "user is not authorized"));
@@ -149,19 +150,20 @@ public class ImageRepository {
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                             // Successfully downloaded data to local file
                             imageFile = localFile;
+                            isChange = false;
                             notifyOnImageDownloadedListenersAboutSuccess(imageFile);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle failed download
+
                     notifyOnImageDownloadedListenersAboutFailure(exception);
                 }
             });
         } catch (IOException e) {
 
         }
-//        notifyOnProgressEnded();
     }
 
     public void addOnImageUploadedListener(OnImageUploadedListener listener) {
@@ -170,9 +172,6 @@ public class ImageRepository {
         }
     }
 
-    public void removeOnImageUploadedListener(OnImageUploadedListener listener){
-        onImageUploadedListeners.remove(listener);
-    }
 
     public void addOnImageDownloadedListener(OnImageDownloadedListener listener) {
         if (!onImageDownloadedListeners.contains(listener)) {
@@ -184,21 +183,9 @@ public class ImageRepository {
         onImageDownloadedListeners.remove(listener);
     }
 
-    public void notifyOnImageUploadedListenersAboutSuccess() {
-        for (OnImageUploadedListener listener:onImageUploadedListeners) {
-            listener.onImageUploaded();
-        }
-    }
-
     public void notifyOnImageDownloadedListenersAboutSuccess(File image) {
         for (OnImageDownloadedListener listener:onImageDownloadedListeners) {
             listener.onImageDownloaded(image);
-        }
-    }
-
-    public void notifyOnImageUploadedListenersAboutFailure(Exception e) {
-        for (OnImageUploadedListener listener:onImageUploadedListeners) {
-            listener.onImageUploadFailure(e);
         }
     }
 
@@ -225,16 +212,10 @@ public class ImageRepository {
         }
     }
 
-    public void notifyOnProgressStarted() {
-        for (OnProgressListener listener:onProgressListeners) {
-            listener.onProgressStarted();
-        }
+    public void removeOnProgressListener(OnProgressListener listener) {
+        onProgressListeners.remove(listener);
     }
 
-    public void notifyOnProgressEnded() {
-        for (OnProgressListener listener:onProgressListeners) {
-            listener.onProgressEnded();
-        }
-    }
+
 
 }

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.MenuItem;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,10 +26,12 @@ import android.net.Uri;
 
 public class MainActivity extends AppCompatActivity
         implements ProfileFragment.OnFragmentInteractionListener{
+    private UserRepository userRepository;
     private NavController navController = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userRepository = new UserRepository();
         if (FirebaseAuth.getInstance().getCurrentUser() == null){
             startAuthActivity();
             return;
@@ -51,6 +54,11 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(this, AuthActivity.class));
         finish();
     }
+
+    public void startAboutActivity(){
+        startActivity(new Intent(this, AboutActivity.class));
+        finish();
+    }
     private  void setupDrawerContent(NavigationView navigationView){
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -67,19 +75,7 @@ public class MainActivity extends AppCompatActivity
             askAndNavigateToFragment(menuItem.getItemId(), null);
             return;
         }
-        switch (menuItem.getItemId()){
-            case R.id.nav_profile:
-                navController.navigate(R.id.profileFragment);
-                break;
-            case R.id.nav_news:
-                navController.navigate(R.id.newsFragment);
-                break;
-            default:
-                navController.navigate(R.id.homeFragment);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        navigate(menuItem.getItemId());
     }
 
     @Override
@@ -116,10 +112,26 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         }
         if (navController.getCurrentDestination().getId() == R.id.profileEditFragment) {
-            askAndNavigateToFragment(R.id.profileFragment, null);
-        } else {
+            askAndNavigateToFragment(R.id.nav_profile, null);
+        }
+        else {
             super.onBackPressed();
         }
+    }
+    private void navigate(int id){
+        switch (id){
+            case R.id.nav_profile:
+                navController.navigate(R.id.profileFragment);
+                break;
+            case R.id.nav_news:
+                navController.navigate(R.id.newsFragment);
+                break;
+            case R.id.nav_home:
+                navController.navigate(R.id.homeFragment);
+                break;
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
     private void askAndNavigateToFragment(final int fragmentId, final Context cn) {
@@ -128,7 +140,7 @@ public class MainActivity extends AppCompatActivity
                 .setPositiveButton(R.string.leave, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (cn == null){
-                        navController.navigate(fragmentId);
+                            navigate(fragmentId);
                         }
                         else startActivity(new Intent(cn, AboutActivity.class));
                     }

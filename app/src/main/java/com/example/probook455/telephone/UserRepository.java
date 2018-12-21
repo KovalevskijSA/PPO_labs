@@ -2,6 +2,8 @@ package com.example.probook455.telephone;
 
 import android.util.Log;
 
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -14,87 +16,44 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 
-public class UserRepository implements ValueEventListener {
-    private static final String TAG = "UserRepository";
+public class UserRepository {
+    private FirebaseAuth authInstance;
+    private FirebaseUser user;
+    private DatabaseReference profileReference;
 
-    private static UserRepository instance = null;
-    private FirebaseAuth firebaseAuth;
-    private DatabaseReference databaseReference;
-    private FirebaseUser firebaseUser;
-    private UserProfile user;
-
-    private ArrayList<OnUserProfileUpdatedListener> userUpdatedListeners;
-
-    private UserRepository() {
-        firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        db.setPersistenceEnabled(true);
-        databaseReference = db.getReference();
-        firebaseUser = firebaseAuth.getCurrentUser();
-        user = new UserProfile();
-        databaseReference.child("users").child(firebaseUser.getUid()).addValueEventListener(this);
-        userUpdatedListeners = new ArrayList<OnUserProfileUpdatedListener>();
-    }
-
-    public static UserRepository getInstance() {
-        if (instance == null) {
-            instance = new UserRepository();
+    public UserRepository() {
+        authInstance = FirebaseAuth.getInstance();
+        user = authInstance.getCurrentUser();
+        if (user != null) {
+            profileReference = FirebaseDatabase.getInstance().getReference()
+                    .child("users").child(user.getUid());
         }
-        return instance;
     }
 
-    public void logOut(){
-
-//        instance = null;
-        firebaseAuth.signOut();
-    }
-
-    public UserProfile getUser() {
+    public FirebaseUser getUser(){
         return user;
     }
 
-    public void setUser(UserProfile user){
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser == null) {
-            Log.e(TAG, "user is not authorized when saving profile !!!!!!!!!!!!!");
-        }
-        databaseReference.child("users").child(firebaseUser.getUid()).setValue(user);
+    public String getEmail(){
+        return user.getEmail();
     }
 
-    @Override
-    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        user = dataSnapshot.getValue(UserProfile.class);
-        notifyUserProfileUpdated();
+    public Task<AuthResult> signIn(String email, String password){
+        return authInstance.signInWithEmailAndPassword(email, password);
     }
 
-    @Override
-    public void onCancelled(@NonNull DatabaseError databaseError) {
-        databaseError = databaseError;
+    public void signOut(){
+        authInstance.signOut();
     }
 
-    public interface OnUserProfileUpdatedListener {
-        void OnUserUpdated(UserProfile user);
+    public Task<AuthResult> createNewUser(String email, String password){
+        return authInstance.createUserWithEmailAndPassword(email, password);
+    }
+    public void setUserProfile(UserProfile profile){
+        profileReference.setValue(profile);
     }
 
-    public void notifyFirebaseUser(){
-        notifyUserProfileUpdated();
+    public void addProfileEventListener(ValueEventListener profileEventListener){
+        profileReference.addValueEventListener(profileEventListener);
     }
-
-    private void notifyUserProfileUpdated() {
-        for (OnUserProfileUpdatedListener listener:userUpdatedListeners) {
-            listener.OnUserUpdated(this.user);
-        }
-    }
-
-    public void addOnUserProfileUpdatedListener(OnUserProfileUpdatedListener listener){
-        if (!userUpdatedListeners.contains(listener)) {
-            userUpdatedListeners.add(listener);
-        }
-    }
-
-    public void removeOnUserProfileUpdatedListener(OnUserProfileUpdatedListener listener) {
-        userUpdatedListeners.remove(listener);
-    }
-
-
 }

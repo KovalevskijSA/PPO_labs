@@ -114,9 +114,7 @@ public class NewsFragment extends Fragment implements RssReader.OnFeedItemLoaded
         feedsAdapter = new FeedsAdapter(getContext(), new ArrayList<FeedItem>(), onItemClickListener);
         recyclerView.setAdapter(feedsAdapter);
 
-        boolean isConnected;
-        isConnected = isOnline();
-        if (isConnected) {
+        if (isOnline()) {
             loadRssFromTheInternet(address);
         } else {
             Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show();

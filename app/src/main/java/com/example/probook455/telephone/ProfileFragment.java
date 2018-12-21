@@ -6,8 +6,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,28 +18,32 @@ import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.probook455.telephone.rss.OnProgressListener;
+import com.firebase.ui.auth.data.model.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.File;
 import java.util.ArrayList;
 
-public class ProfileFragment extends Fragment implements OnProgressListener {
+public class ProfileFragment extends Fragment {
 
     private Button editButton;
     private Button logoutButton;
-    private ProgressDialog progressDialog;
 
     private TextView emailTextView;
     private TextView phoneTextView;
     private TextView nameTextView;
     private TextView surnameTextView;
     private ImageView imageView;
-
+    private ProgressBar progressBar;
     private ImageRepository.OnImageDownloadedListener onImageDownloadedListener;
-    private UserRepository.OnUserProfileUpdatedListener onUserUpdatedListener;
-
+    private UserRepository rep = new UserRepository();
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -60,7 +66,7 @@ public class ProfileFragment extends Fragment implements OnProgressListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
         logoutButton = view.findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(logout);
-
+        progressBar = view.findViewById(R.id.progressBar);
         editButton = view.findViewById(R.id.profileEditButton);
         editButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_profileFragment_to_profileEditFragment));
         emailTextView = view.findViewById(R.id.profileEmail);
@@ -69,31 +75,38 @@ public class ProfileFragment extends Fragment implements OnProgressListener {
         surnameTextView = view.findViewById(R.id.profileLastName);
         imageView = view.findViewById(R.id.profileImage);
 
-        UserRepository rep = UserRepository.getInstance();
-        setUI(rep.getUser());
-        setFileAsImage(ImageRepository.getInstance().getImageFile());
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+        rep = new UserRepository();
 
-        onUserUpdatedListener = new UserRepository.OnUserProfileUpdatedListener() {
+        ValueEventListener profileEventListener = new ValueEventListener() {
             @Override
-            public void OnUserUpdated(UserProfile user) {
-                setUI(user);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+                setUI(userProfile);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         };
-        rep.addOnUserProfileUpdatedListener(onUserUpdatedListener);
-
+        ////
+        rep.addProfileEventListener(profileEventListener);
+        setFileAsImage(ImageRepository.getInstance().getImageFile());
         onImageDownloadedListener = new ImageRepository.OnImageDownloadedListener() {
             @Override
             public void onImageDownloaded(File image) {
                 setFileAsImage(image);
+//                if (!ImageRepository.isChange)
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
             }
 
             @Override
             public void onImageDownloadFailure(Exception e) {
                 e = e;
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
             }
         };
         ImageRepository.getInstance().addOnImageDownloadedListener(onImageDownloadedListener);
-
     }
 
     private void setUI(UserProfile user) {
@@ -109,15 +122,19 @@ public class ProfileFragment extends Fragment implements OnProgressListener {
     private void setFileAsImage(File file) {
         if (file == null)
             return;
+
         Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
         imageView.setImageBitmap(myBitmap);
+        if (!ImageRepository.isChange){
+            progressBar.setVisibility(ProgressBar.INVISIBLE);
+        }
     }
 
 
     private View.OnClickListener logout = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            UserRepository.getInstance().logOut();
+            rep.signOut();
             ImageRepository.logOut();
 //            FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
 //                @Override
@@ -137,28 +154,10 @@ public class ProfileFragment extends Fragment implements OnProgressListener {
     public void onDetach() {
         super.onDetach();
         ImageRepository.getInstance().removeOnImageDownloadedListener(onImageDownloadedListener);
-        UserRepository.getInstance().removeOnUserProfileUpdatedListener(onUserUpdatedListener);
     }
 
    public interface OnFragmentInteractionListener {
        // TODO: Update argument type and name
        void onFragmentInteraction(Uri uri);
    }
-
-    @Override
-    public void onProgressStarted() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getContext());
-        }
-        progressDialog.show();
-        progressDialog.setMessage(getString(R.string.loading));
-        progressDialog.setCancelable(false);
-    }
-
-    @Override
-    public void onProgressEnded() {
-        if (progressDialog != null) {
-            progressDialog.hide();
-        }
-    }
 }
