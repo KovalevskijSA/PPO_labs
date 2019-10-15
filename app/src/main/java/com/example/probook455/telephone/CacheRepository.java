@@ -102,18 +102,4 @@ public class CacheRepository {
     public void removeCacheForUser(Context context, String userUid) {
         removeTempFile(context, userUid);
     }
-
-    class JsonFeedItemsAdapter {
-        public List<FeedItem> getFeedItems() {
-            return feedItems;
-        }
-
-        public void setFeedItems(List<FeedItem> feedItems) {
-            this.feedItems = feedItems;
-        }
-
-        @SerializedName("feedItems")
-        @Expose
-        private List<FeedItem> feedItems;
-    }
 }

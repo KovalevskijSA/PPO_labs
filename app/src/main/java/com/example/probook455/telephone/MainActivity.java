@@ -55,10 +55,6 @@ public class MainActivity extends AppCompatActivity
         finish();
     }
 
-    public void startAboutActivity(){
-        startActivity(new Intent(this, AboutActivity.class));
-        finish();
-    }
     private  void setupDrawerContent(NavigationView navigationView){
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -139,6 +135,7 @@ public class MainActivity extends AppCompatActivity
         builder.setMessage(R.string.youre_about_to_loose_changes)
                 .setPositiveButton(R.string.leave, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        navController.popBackStack();
                         if (cn == null){
                             navigate(fragmentId);
                         }
@@ -147,7 +144,8 @@ public class MainActivity extends AppCompatActivity
                 })
                 .setNegativeButton(R.string.stay, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
+                        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                        drawer.closeDrawer(GravityCompat.START);
                     }
                 });
         builder.create().show();

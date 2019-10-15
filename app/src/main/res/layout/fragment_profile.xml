@@ -181,7 +181,6 @@
                 android:layout_marginBottom="0dp"
                 android:ems="10"
                 android:fontFamily="sans-serif"
-                android:hint="umail@jkjk.by"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp" />

@@ -74,7 +74,7 @@ public class ProfileFragment extends Fragment {
         nameTextView = view.findViewById(R.id.profileFirstName);
         surnameTextView = view.findViewById(R.id.profileLastName);
         imageView = view.findViewById(R.id.profileImage);
-
+        disableButton();
         progressBar.setVisibility(ProgressBar.VISIBLE);
         rep = new UserRepository();
 
@@ -97,6 +97,7 @@ public class ProfileFragment extends Fragment {
             public void onImageDownloaded(File image) {
                 setFileAsImage(image);
 //                if (!ImageRepository.isChange)
+                enableButton();
                 progressBar.setVisibility(ProgressBar.INVISIBLE);
             }
 
@@ -107,6 +108,16 @@ public class ProfileFragment extends Fragment {
             }
         };
         ImageRepository.getInstance().addOnImageDownloadedListener(onImageDownloadedListener);
+    }
+
+    private void disableButton(){
+        editButton.setEnabled(false);
+        logoutButton.setEnabled(false);
+    }
+
+    private void enableButton(){
+        editButton.setEnabled(true);
+        logoutButton.setEnabled(true);
     }
 
     private void setUI(UserProfile user) {
@@ -127,7 +138,9 @@ public class ProfileFragment extends Fragment {
         imageView.setImageBitmap(myBitmap);
         if (!ImageRepository.isChange){
             progressBar.setVisibility(ProgressBar.INVISIBLE);
+            enableButton();
         }
+
     }
 
 
@@ -135,18 +148,7 @@ public class ProfileFragment extends Fragment {
         @Override
         public void onClick(View v) {
             rep.signOut();
-            ImageRepository.logOut();
-//            FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
-//                @Override
-//                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                    FirebaseUser user = firebaseAuth.getCurrentUser();
-//                    if (user == null) {
             ((MainActivity)getActivity()).startAuthActivity();
-//                        startActivity(new Intent(getActivity(), AuthActivity.class));
-//                        getActivity().finish();
-//                    }
-//                }
-//            };
         }
     };
 

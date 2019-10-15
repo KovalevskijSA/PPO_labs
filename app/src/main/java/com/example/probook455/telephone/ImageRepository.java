@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 
 public class ImageRepository {
-
-    private static final String TAG = "ImageRepository";
     private final String imageFilename = "image";
     private final String imageFileExtention = ".jpg";
     public static boolean isChange = false;
@@ -55,10 +53,6 @@ public class ImageRepository {
             instance.downloadImage();
         }
         return instance;
-    }
-
-    public static void logOut(){
-//        instance = null;
     }
 
     public void setImage(Uri file) {

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -42,7 +43,6 @@ public class NewsFragment extends Fragment implements RssReader.OnFeedItemLoaded
     private FeedsAdapter feedsAdapter;
     private RssReader rssReader;
     private ProgressDialog progressDialog;
-    private boolean loadedFromCache = false;
     FeedsAdapter.OnItemClickListener onItemClickListener;
 
     public NewsFragment() {
@@ -173,6 +173,12 @@ public class NewsFragment extends Fragment implements RssReader.OnFeedItemLoaded
                         });
         builder.create().show();
 
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConf){
+        super.onConfigurationChanged(newConf);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), newConf.orientation));
     }
 
     private void showRssSourceInputDialog() {

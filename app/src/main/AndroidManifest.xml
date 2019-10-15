@@ -8,7 +8,6 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -30,16 +29,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.VIEW" />-->
-
-                <!--<category android:name="android.intent.category.BROWSABLE" />-->
-
-                <!--<data-->
-                    <!--android:host="com.example.probook455.telephone"-->
-                    <!--android:scheme="sdapp" />-->
-            <!--</intent-filter>-->
         </activity>
         <activity
             android:name=".RssWebView"

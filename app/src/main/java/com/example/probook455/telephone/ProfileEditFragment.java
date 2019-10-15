@@ -20,16 +20,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import static android.app.Activity.RESULT_OK;
@@ -42,14 +35,12 @@ public class ProfileEditFragment extends Fragment {
     private Uri selectedImageUri;
     private Bitmap takenImageBitmap = null;
 
-    private EditText emailEditText;
     private EditText phoneEditText;
     private EditText firstNameEditText;
     private EditText lastNameEditText;
     private ImageView imageView;
     private ProgressBar progressBar;
     private Button saveButton;
-    private UserProfile user;
 
     private Boolean isPhotoChanged = false;
     private UserRepository rep = new UserRepository();;
@@ -76,6 +67,7 @@ public class ProfileEditFragment extends Fragment {
         saveButton = view.findViewById(R.id.saveButton);
         progressBar = view.findViewById(R.id.progressBar);
         selectedImageUri = null;
+        disableButton();
 
         if (savedInstanceState != null) {
             firstNameEditText.setText(savedInstanceState.getString("name"));
@@ -100,6 +92,7 @@ public class ProfileEditFragment extends Fragment {
             public void onImageDownloaded(File image) {
                 setFileAsImage(image);
                 progressBar.setVisibility(ProgressBar.INVISIBLE);
+                enableButton();
             }
 
             @Override
@@ -181,6 +174,7 @@ public class ProfileEditFragment extends Fragment {
         imageView.setImageBitmap(myBitmap);
         if (!ImageRepository.isChange){
             progressBar.setVisibility(ProgressBar.INVISIBLE);
+            enableButton();
         }
     }
 
@@ -215,6 +209,14 @@ public class ProfileEditFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         ImageRepository.getInstance().removeOnImageDownloadedListener(onImageDownloadedListener);
+    }
+
+    private void disableButton(){
+        saveButton.setEnabled(false);
+    }
+
+    private void enableButton(){
+        saveButton.setEnabled(true);
     }
 
     @Override
